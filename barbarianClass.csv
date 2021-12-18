@@ -1,0 +1,34 @@
+level,1,PB,2,features,Rage,Unarmored Defense,Rages,2,Rage Damage,2
+level,2,PB,2,features,Reckless Attack,Danger Sense,Rages,2,Rage Damage,2
+level,3,PB,2,features,Primal Path,Rages,3,Rage Damage,2
+level,4,PB,2,features,Ability Score Improvement,Rages,3,Rage Damage,2
+level,5,PB,3,features,Extra Attack,Fast Movement,Rages,3,Rage Damage,2
+level,6,PB,3,features,Path feature,Rages,4,Rage Damage,2
+level,7,PB,3,features,Feral Instinct,Rages,4,Rage Damage,2
+level,8,PB,3,features,Ability Score Improvement,Rages,4,Rage Damage,2
+level,9,PB,4,features,Brutal Critical (1 die),Rages,4,Rage Damage,3
+level,10,PB,4,features,Path feature,Rages,4,Rage Damage,3
+level,11,PB,4,features,Relentless Rage,Rages,4,Rage Damage,3
+level,12,PB,4,features,Ability Score Improvement,Rages,5,Rage Damage,3
+level,13,PB,5,features,Brutal Critical (2 dice),Rages,5,Rage Damage,3
+level,14,PB,5,features,Path feature,Rages,5,Rage Damage,3
+level,15,PB,5,features,Persistent Rage,Rages,5,Rage Damage,3
+level,16,PB,5,features,Ability Score Improvement,Rages,5,Rage Damage,4
+level,17,PB,6,features,Brutal Critical (3 dice),Rages,6,Rage Damage,4
+level,18,PB,6,features,Indomitable Might,Rages,6,Rage Damage,4
+level,19,PB,6,features,Ability Score Improvement,Rages,6,Rage Damage,4
+level,20,PB,6,features,Primal Champion,Rages,Unlimited,Rage Damage,4
+Hit Dice,12
+Proficiencies
+Armor,light armor,medium armor,shields
+Weapons,simple weapons,martial weapons
+Tools,none
+Saving Throws,Strength,Constitution
+Skills,2,Animal Handling,Athletics,Intimidation,Nature,Perception,Survival
+Starting Equipment,Greataxe/Martial Melee,Two Handaxes/Simple weapon,Explorer's Pack and four Javelins
+Primal Path,Path of the Berserker,Path of the Totem Warrior
+Path of the Berserker feats
+3,Frenzy,6,Mindless Rage,10,Intimidating Presence,14,Retaliation
+Path of the Totem Warrior feats
+Totem Choice,Bear/Eagle/Wolf
+3,Spirit Seeker,3,Totem Spirit,6,Aspect of the Beast,10,Spirit Walker,14,Totemic Attunement

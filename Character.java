@@ -1,6 +1,3 @@
-import org.json.JSONObject;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,23 +20,21 @@ public class Character {
     int dexterity = 0;
     int constitution = 0;
 
-    String raceName;
-
-    String speed;
     String[] ageRange = {};
     String[] abilityBonuses = {};
     String[] normalAlignment = {};
-    String size;
-    String[] startingProficiencies = {};
     String[] startingProficienciesOptions = {};
-    String[] languages = {};
     String[] traits = {};
     String[] languageOptions = {};
+
     String alignment;//pulled from race class
     String className;
-
     String name = "";
     String sex = "";
+    String size;
+    String raceName;
+    String speed;
+
 
     ArrayList items = new ArrayList();
     ArrayList equipment = new ArrayList();
@@ -47,7 +42,10 @@ public class Character {
     StringBuilder weapons = new StringBuilder();
     StringBuilder clothing = new StringBuilder();
 
+    Barbarian barb;
 
+    ArrayList<String> languages = new ArrayList<>();
+    ArrayList<String> startingProficiencies = new ArrayList<>();
     ArrayList classFeats = new ArrayList();//will be changed to be made a class
     ArrayList attributes = new ArrayList();//will be changed to be made a class
     ArrayList skills = new ArrayList();//will be changed to be made a class
@@ -65,55 +63,71 @@ public class Character {
         createCharacter();
     }
 
-    public void createCharacter(){
+    public Character(String characterClass, int level){
 
+        this.level = level;
+        this.className = characterClass;
+        createCharacter();
+        displayCharacter();
+    }
+
+    public void createCharacter(){
         setRaceData();
         setClass();
-        setStats();
 
+        switch(this.className){
+            case "Barbarian":
+                barb = new Barbarian(this.level, this.className);
+                break;
+            case "Bard":
+                break;
+        }
+        setStats();
     }
 
     public void setClass(){
 
-        int rn = random.nextInt(12);
-        switch (rn) {
-            case 0:
-                this.className = "Barbarian";
-                break;
-            case 1:
-                this.className = "Bard";
-                break;
-            case 2:
-                this.className = "Sorcerer";
-                break;
-            case 3:
-                this.className = "Warlock";
-                break;
-            case 4:
-                this.className = "Cleric";
-                break;
-            case 5:
-                this.className = "Druid";
-                break;
-            case 6:
-                this.className = "Fighter";
-                break;
-            case 7:
-                this.className = "Ranger";
-                break;
-            case 8:
-                this.className = "Monk";
-                break;
-            case 9:
-                this.className = "Paladin";
-                break;
-            case 10:
-                this.className = "Rogue";
-                break;
-            case 11:
-                this.className = "Wizard";
-                break;
+        if(this.className.equals("random class")) {
+            int rn = random.nextInt(12);
+            switch (rn) {
+                case 0:
+                    this.className = "Barbarian";
+                    break;
+                case 1:
+                    this.className = "Bard";
+                    break;
+                case 2:
+                    this.className = "Sorcerer";
+                    break;
+                case 3:
+                    this.className = "Warlock";
+                    break;
+                case 4:
+                    this.className = "Cleric";
+                    break;
+                case 5:
+                    this.className = "Druid";
+                    break;
+                case 6:
+                    this.className = "Fighter";
+                    break;
+                case 7:
+                    this.className = "Ranger";
+                    break;
+                case 8:
+                    this.className = "Monk";
+                    break;
+                case 9:
+                    this.className = "Paladin";
+                    break;
+                case 10:
+                    this.className = "Rogue";
+                    break;
+                case 11:
+                    this.className = "Wizard";
+                    break;
 
+            }
         }
     }
 
@@ -126,9 +140,16 @@ public class Character {
         this.abilityBonuses = race.getAbilityBonuses();
         this.normalAlignment = race.getNormalAlignment();
         this.size = race.getSize();
+
         this.startingProficiencies = race.getStartingProficiencies();
+        this.startingProficiencies = stripNoneFromList(this.startingProficiencies);
+
         this.startingProficienciesOptions = race.getStartingProficienciesOptions();
+
         this.languages = race.getLanguages();
+        this.languages = stripNoneFromList(this.languages);
+
+        this.languageOptions = race.getLanguageOptions();
         this.traits = race.getTraits();
         this.languageOptions = race.getLanguageOptions();
     }
@@ -136,12 +157,56 @@ public class Character {
     public void setStats(){//needs HP and AC added later
         ArrayList<Integer> abilityScores = rollAbilityScores();//it's sorted from lowest to highest
         setStatsByClass(abilityScores, this.className);
+
+        switch (this.className) {
+            case "Barbarian":
+                if(this.level == 1){//HP
+                    HP = barb.getHitDie() + this.constitution;
+                } else{
+                    HP = barb.getHitDie() + (this.constitution - 10)/2;
+                    int randomRoll = 0;
+                    for(int i = 0; i < this.level; i++){
+                        randomRoll = random.nextInt(12) + 1;
+                        HP += (randomRoll + ((this.constitution - 10)/2));
+                    }
+                }
+                PB = barb.getproficiencyBonus();
+                if(equipment.size() == 0){
+                    AC = 10 + ((this.dexterity - 10)/2) + ((this.constitution - 10)/2);
+                }
+
+//fighter and rogue don't follow the 4/8/12/16/19
+                break;
+            case "Bard":
+                break;
+            case "Sorcerer":
+                break;
+            case "Warlock":
+                break;
+            case "Cleric":
+                break;
+            case "Druid":
+                break;
+            case "Fighter":
+                break;
+            case "Ranger":
+                break;
+            case "Monk":
+                break;
+            case "Paladin":
+                break;
+            case "Rogue":
+                break;
+            case "Wizard":
+                break;
+
+        }
     }
 
     public void setStatsByClass(ArrayList<Integer> scores, String cn){
         int rn;
 
-        switch(cn){
+        switch(cn){//rolling base stats before leveling up
             case "Barbarian":
                 this.strength = scores.get(5);
                 this.constitution = scores.get(4);
@@ -421,8 +486,86 @@ public class Character {
 
 
         }
-
+        if(this.className.equals("Fighter")){//adding stats for the ability score improvements they get for leveling up
+            if(this.level >= 19) {
+                levelUpStats(7);
+            } else if(this.level >= 16){
+                levelUpStats(6);
+            } else if(this.level >= 14){
+                levelUpStats(5);
+            } else if(this.level >= 12){
+                levelUpStats(4);
+            } else if(this.level >= 8){
+                levelUpStats(3);
+            } else if(this.level >= 6){
+                levelUpStats(2);
+            }else if(this.level >= 4){
+                levelUpStats(1);
+            }
+        }else if(this.className.equals("Rogue")){
+            if(this.level >= 19) {
+                levelUpStats(6);
+            } else if(this.level >= 16){
+                levelUpStats(5);
+            } else if(this.level >= 12){
+                levelUpStats(4);
+            } else if(this.level >= 10){
+                levelUpStats(3);
+            } else if(this.level >= 8){
+                levelUpStats(2);
+            } else if(this.level >= 4){
+                levelUpStats(1);
+            }
+        }else{
+            if(this.level >= 19) {
+                levelUpStats(5);
+            } else if(this.level >= 16){
+                levelUpStats(4);
+            } else if(this.level >= 12){
+                levelUpStats(3);
+            } else if(this.level >= 8){
+                levelUpStats(2);
+            } else if(this.level >= 4){
+                levelUpStats(1);
+            }
+        }
         addModifiersToStats();
+    }
+
+    public void levelUpStats(int howManyIncreases){
+        int rollToPickAStatToIncrease;
+
+        for (int i = 0; i < howManyIncreases; i++){
+            rollToPickAStatToIncrease = random.nextInt(6);
+            switch (rollToPickAStatToIncrease) {
+                case 0:
+                    if(this.strength == 20){i--; break;}
+                    this.strength += 2;
+                    break;
+                case 1:
+                    if(this.wisdom == 20){i--; break;}
+                    this.wisdom += 2;
+                    break;
+                case 2:
+                    if(this.charisma == 20){i--; break;}
+                    this.charisma += 2;
+                    break;
+                case 3:
+                    if(this.dexterity == 20){i--; break;}
+                    this.dexterity += 2;
+                    break;
+                case 4:
+                    if(this.constitution == 20){i--; break;}
+                    this.constitution += 2;
+                    break;
+                case 5:
+                    if(this.intelligence == 20){i--; break;}
+                    this.intelligence += 2;
+                    break;
+                default:
+                    System.out.println("Out of bounds error while rolling to pick a stat to increase when adding ability score improvements for level");
+            }
+        }
     }
 
     public void addModifiersToStats(){
@@ -471,25 +614,44 @@ public class Character {
     }
 
     public void displayCharacter(){
-
         System.out.println("Race Name: " + raceName);
         System.out.println("Class Name: " + className);
+        System.out.println("Level: " + level);
+        System.out.println("\nHP: " + HP);
+        System.out.println("PB: " + PB);
+        System.out.println("AC: " + AC);
         System.out.println("Base speed: " + speed);
-        System.out.println("Strength: " + strength);
+        System.out.println("\nStrength: " + strength);
         System.out.println("Dexterity: " + dexterity);
         System.out.println("Charisma: " + charisma);
         System.out.println("Constitution: " + constitution);
         System.out.println("Wisdom: " + wisdom);
         System.out.println("Intelligence: " + intelligence);
-        System.out.println("Ability Bonuses: " + Arrays.toString(abilityBonuses));
-        System.out.println("Normal Alignment: " + Arrays.toString(normalAlignment));
+        System.out.println("\nNormal Alignment: " + Arrays.toString(normalAlignment));
         System.out.println("Age Range: " + Arrays.toString(ageRange));
         System.out.println("Size: " + size);
-        System.out.println("Starting Proficiencies: " + Arrays.toString(startingProficiencies));
-        System.out.println("Starting Proficiencies Options: " + Arrays.toString(startingProficienciesOptions));
-        System.out.println("Languages: " + Arrays.toString(languages));
-        if(raceName.equals("Half-Elf") || raceName.equals("Human")){System.out.println("Language Options: " + Arrays.toString(languageOptions));}
+        System.out.println("\nStarting Proficiencies: " + startingProficiencies.toString());
+        System.out.println("Languages: " + languages.toString());
         System.out.println("Traits: " + Arrays.toString(traits));
+
+        System.out.println("\n--------------------------------------------Class Data--------------------------------------------\n");
+
+        switch(this.className){
+            case "Barbarian":
+                barb.displayClassData();
+                break;
+            case "Bard":
+                break;
+        }
+    }
+
+    public ArrayList<String> stripNoneFromList(ArrayList<String> list){
+        for(int i = 0; i < list.size(); i++){
+            if(list.get(i).equals("none")){
+                list.remove(i);
+            }
+        }
+        return list;
     }
 
     public String getRaceName(){return this.raceName;}
@@ -510,11 +672,11 @@ public class Character {
 
     public String getSize(){return this.size;}
 
-    public String[] getStartingProficiencies(){return this.startingProficiencies;}
+    public ArrayList<String> getStartingProficiencies(){return this.startingProficiencies;}
 
     public String[] getStartingProficienciesOptions(){return this.startingProficienciesOptions;}
 
-    public String[] getLanguages(){return this.languages;}
+    public ArrayList<String> getLanguages(){return this.languages;}
 
     public String[] getTraits(){return this.traits;}
 

@@ -2,23 +2,25 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
 public class Race{
 
     String raceName;
-
     String speed;
+    String size;
+
     String[] ageRange = {};
     String[] abilityBonuses = {};
     String[] normalAlignment = {};
-    String size;
-    String[] startingProficiencies = {};
     String[] startingProficienciesOptions = {};
-    String[] languages = {};
     String[] traits = {};
     String[] languageOptions = {};
+
+    ArrayList<String> startingProficiencies = new ArrayList<>();
+    ArrayList<String> languages = new ArrayList<>();
 
     public Race (){
 
@@ -39,11 +41,11 @@ public class Race{
 
     public String getSize(){return this.size;}
 
-    public String[] getStartingProficiencies(){return this.startingProficiencies;}
+    public ArrayList<String> getStartingProficiencies(){return this.startingProficiencies;}
 
     public String[] getStartingProficienciesOptions(){return this.startingProficienciesOptions;}
 
-    public String[] getLanguages(){return this.languages;}
+    public ArrayList<String> getLanguages(){return this.languages;}
 
     public String[] getTraits(){return this.traits;}
 
@@ -80,15 +82,15 @@ public class Race{
         BufferedReader br = null;
         try {
             switch(this.raceName) {
-                case "Dwarf": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\dwarfRace.csv")); break;
-                case "Elf": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\elfRace.csv")); break;
-                case "Halfling": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\halflingRace.csv")); break;
-                case "Human": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\humanRace.csv")); break;
-                case "Dragonborn": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\dragonbornRace.csv")); break;
-                case "Gnome": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\gnomeRace.csv")); break;
-                case "Half-Elf": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\halfelfRace.csv")); break;
-                case "Half-Orc": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\halforcRace.csv")); break;
-                case "Tiefling": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\tieflingRace.csv")); break;
+                case "Dwarf": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\csv files\\dwarfRace.csv")); break;
+                case "Elf": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\csv files\\elfRace.csv")); break;
+                case "Halfling": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\csv files\\halflingRace.csv")); break;
+                case "Human": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\csv files\\humanRace.csv")); break;
+                case "Dragonborn": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\csv files\\dragonbornRace.csv")); break;
+                case "Gnome": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\csv files\\gnomeRace.csv")); break;
+                case "Half-Elf": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\csv files\\halfelfRace.csv")); break;
+                case "Half-Orc": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\csv files\\halforcRace.csv")); break;
+                case "Tiefling": br = new BufferedReader(new FileReader("C:\\Users\\aaron\\IdeaProjects\\5e Character Generator\\src\\csv files\\tieflingRace.csv")); break;
 
 
 
@@ -113,6 +115,7 @@ public class Race{
             String[] currentLine = line.split(splitBy);
 
             if(this.raceName.equals("Half-Elf")){
+                Random random = new Random();
                 switch(count){
 
                     case 0: break;
@@ -121,15 +124,37 @@ public class Race{
                     case 3: this.normalAlignment = currentLine; break;
                     case 4: this.ageRange = currentLine; break;
                     case 5: this.size = currentLine[0]; break;
-                    case 6: this.startingProficiencies = currentLine; break;
-                    case 7: this.startingProficienciesOptions = currentLine; break;
-                    case 8: this.languages = currentLine; break;
-                    case 9: this.languageOptions = currentLine; break;
+                    case 6: this.startingProficiencies.addAll(Arrays.asList(currentLine)); break;
+                    case 7: this.startingProficienciesOptions = currentLine;
+                        String previousChoice = "";
+                        for(int i = 0; i < Integer.parseInt(currentLine[0]); i++){
+                            int pickAnOption = random.nextInt(currentLine.length - 1) + 1;
+                            if(previousChoice.equals(currentLine[pickAnOption])){i--;}
+                            else{
+                                previousChoice = currentLine[pickAnOption];
+                                startingProficiencies.add(currentLine[pickAnOption]);
+                            }
+                        }
+                        break;
+                    case 8: this.languages.addAll(Arrays.asList(currentLine)); break;
+                    case 9:
+                        previousChoice = "";
+                        for(int i = 0; i < Integer.parseInt(currentLine[0]); i++){
+                            int pickAnOption = random.nextInt(currentLine.length - 1) + 1;
+                            if(previousChoice.equals(currentLine[pickAnOption])){i--;}
+                            else{
+                                previousChoice = currentLine[pickAnOption];
+                                languages.add(currentLine[pickAnOption]);
+                            }
+                        }
+                        this.languageOptions = currentLine;
+                        break;
                     case 10: this.traits = currentLine; break;
                     default: System.out.println("Index out of bounds while storing information from file.");
                 }
             }
             else if(this.raceName.equals("Human")){
+                Random random = new Random();
                 switch (count) {
 
                     case 0: break;
@@ -138,14 +163,27 @@ public class Race{
                     case 3: this.normalAlignment = currentLine; break;
                     case 4: this.ageRange = currentLine; break;
                     case 5: this.size = currentLine[0]; break;
-                    case 6: this.startingProficiencies = currentLine; break;
-                    case 7: this.languageOptions = currentLine; break;
-                    case 8: this.languages = currentLine; break;
+                    case 6: this.startingProficiencies.addAll(Arrays.asList(currentLine)); break;
+                    case 7:
+                        this.languageOptions = currentLine;
+                        String previousChoice = "";
+                        for(int i = 0; i < Integer.parseInt(currentLine[0]); i++){
+                            int pickAnOption = random.nextInt(currentLine.length - 1) + 1;
+                            if(previousChoice.equals(currentLine[pickAnOption])){i--;}
+                            else{
+                                previousChoice = currentLine[pickAnOption];
+                                languages.add(currentLine[pickAnOption]);
+                            }
+                        }
+                        break;
+                    case 8: this.languages.addAll(Arrays.asList(currentLine)); break;
                     case 9: this.traits = currentLine; break;
                     default: System.out.println("Index out of bounds while storing information from file.");
                 }
             }
             else {
+                Random random = new Random();
+
                 switch (count) {
 
                     case 0: break;
@@ -154,14 +192,39 @@ public class Race{
                     case 3: this.normalAlignment = currentLine; break;
                     case 4: this.ageRange = currentLine; break;
                     case 5: this.size = currentLine[0]; break;
-                    case 6: this.startingProficiencies = currentLine; break;
-                    case 7: this.startingProficienciesOptions = currentLine; break;
-                    case 8: this.languages = currentLine; break;
+                    case 6: this.startingProficiencies.addAll(Arrays.asList(currentLine)); break;
+                    case 7:
+                        this.startingProficienciesOptions = currentLine;
+                        String previousChoice = "";
+                        for(int i = 0; i < 1; i++){
+                            int pickAnOption = random.nextInt(currentLine.length - 1) + 1;
+                            if(previousChoice.equals(currentLine[pickAnOption])){i--;}
+                            else{
+                                previousChoice = currentLine[pickAnOption];
+                                startingProficiencies.add(currentLine[pickAnOption]);
+                            }
+                        }
+                        break;
+                    case 8: this.languages.addAll(Arrays.asList(currentLine)); break;
                     case 9: this.traits = currentLine; break;
                     default: System.out.println("Index out of bounds while storing information from file.");
                 }
             }
             count++;
+        }
+
+        switch(this.raceName) {
+            case "Dwarf":
+
+                break;
+            case "Elf": break;
+            case "Halfling": break;
+            case "Human": break;
+            case "Dragonborn": break;
+            case "Gnome": break;
+            case "Half-Elf": break;
+            case "Half-Orc": break;
+            case "Tiefling": break;
         }
     }
 }
